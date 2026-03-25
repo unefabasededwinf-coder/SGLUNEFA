@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 2. SEGURIDAD 🛡️
 SECRET_KEY = 'django-insecure-_y-mgm%)wkaf3@=v$d2+v9chi7hx)w0f_4cis$^2&lf(4_l1=s'
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['SistemaGestionLUnefaPF.pythonanywhere.com', 'localhost', '127.0.0.1']
 
 # 3. APLICACIONES INSTALADAS (Fundamental para evitar el RuntimeError) 📦
 INSTALLED_APPS = [
