@@ -1,0 +1,336 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>{% block title %}SG de Laboratorio - UNEFA/Punto Fijo{% endblock %}</title>
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --azul-unefa: #003366;
+            --azul-claro: #1e4a76;
+            --dorado-unefa: #FFD700;
+            --gris-claro: #f8f9fc;
+            --gris-borde: #e9ecef;
+            --texto-oscuro: #2c3e50;
+            --verde-exito: #27ae60;
+            --rojo-error: #e74c3c;
+            --sombra-suave: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gris-claro);
+            color: var(--texto-oscuro);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        .top-header {
+            background: var(--azul-unefa);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-section img {
+            height: 45px;
+            width: auto;
+        }
+
+        .logo-section span {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--dorado-unefa);
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 1px solid rgba(255,255,255,0.3);
+            padding-left: 12px;
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.75rem;
+            transition: 0.2s;
+        }
+        .btn-logout:hover {
+            color: var(--dorado-unefa);
+        }
+
+        .clock {
+            font-family: monospace;
+            font-size: 0.85rem;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 8px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        /* WRAPPER (SIDEBAR + CONTENIDO) */
+        .wrapper {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 260px;
+            background: var(--azul-claro);
+            padding: 24px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: var(--sombra-suave);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item i {
+            width: 22px;
+            font-size: 1.1rem;
+            color: var(--dorado-unefa);
+        }
+
+        .nav-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border-left-color: var(--dorado-unefa);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            background: var(--gris-claro);
+        }
+
+        /* ALERTAS */
+        .custom-alert {
+            padding: 14px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+            box-shadow: var(--sombra-suave);
+            animation: slideDown 0.3s ease;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid var(--verde-exito);
+        }
+
+        .alert-error, .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 5px solid var(--rojo-error);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TARJETAS GENÉRICAS */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid var(--gris-borde);
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--azul-unefa);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--dorado-unefa);
+            display: inline-block;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 10px;
+                gap: 5px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255,255,255,0.2);
+            }
+            .nav-item {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+            .main-content {
+                padding: 20px;
+            }
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
+            .clock {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="top-header">
+        <div class="logo-section">
+            <img src="{% static 'img/logo_unefa.png' %}" alt="Logo UNEFA">
+            <span>SG DE LABORATORIO - UNEFA</span>
+        </div>
+        <div class="user-info">
+            <div class="user-details">
+                <span>BIENVENIDO,</span>
+                <strong class="user-name">{{ user.get_full_name|default:user.username|upper }}</strong>
+            </div>
+            <div class="user-actions">
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout"><i class="fas fa-sign-out-alt"></i> TERMINAR SESIÓN</button>
+                </form>
+            </div>
+            <div class="clock" id="live-clock"></div>
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <aside class="sidebar">
+            <nav>
+                <a href="{% url 'inicio' %}" class="nav-item">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+                <a href="{% url 'crear_reserva' %}" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i> Mis Reservas
+                </a>
+                <a href="{% url 'gestion_materias' %}" class="nav-item">
+                    <i class="fas fa-book"></i> Mis Materias
+                </a>
+                <a href="{% url 'mis_requerimientos' %}" class="nav-item">
+                    <i class="fas fa-tools"></i> Mis Requerimientos
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div id="messages-container">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="custom-alert alert-{{ message.tags }}">
+                            <span>{% if message.tags == 'success' %}✅{% else %}⚠️{% endif %} {{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <script>
+        // Actualizar reloj cada segundo en formato 12h con AM/PM
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // la hora 0 se convierte en 12
+            const hourStr = String(hours).padStart(2, '0');
+            document.getElementById('live-clock').textContent = `${hourStr}:${minutes}:${seconds} ${ampm}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Auto‑cierre de alertas después de 4 segundos
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.custom-alert');
+            alerts.forEach(alert => {
+                alert.style.transition = "opacity 0.5s ease";
+                alert.style.opacity = "0";
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 4000);
+    </script>
+</body>
+</html>

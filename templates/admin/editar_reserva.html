@@ -1,0 +1,215 @@
+{% extends 'admin/base1.html' %}
+{% load static %}
+
+{% block title %}Editar Reserva - UNEFA{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilos específicos para esta página (copiados de crear_reserva.html) */
+    .form-solicitud {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    .form-group {
+        margin-bottom: 0;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--azul-unefa);
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid var(--gris-borde);
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        background: white;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: var(--dorado-unefa);
+        box-shadow: 0 0 0 2px rgba(255,215,0,0.2);
+    }
+    .errorlist {
+        color: var(--rojo-error);
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        list-style: none;
+        padding-left: 0;
+    }
+    .btn-dorado {
+        background: var(--dorado-unefa);
+        color: var(--azul-unefa);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+        align-self: flex-start;
+    }
+    .btn-dorado:hover {
+        background: #e6c200;
+        transform: translateY(-2px);
+    }
+    .btn-outline {
+        background: transparent;
+        color: var(--dorado-unefa);
+        border: 2px solid var(--dorado-unefa);
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-outline:hover {
+        background: var(--dorado-unefa);
+        color: var(--azul-unefa);
+        transform: translateY(-2px);
+    }
+    .help-text {
+        font-size: 0.7rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    .grid-tres-columnas {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+    }
+    @media (max-width: 640px) {
+        .grid-tres-columnas {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        .btn-dorado, .btn-outline {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="card">
+    <h2 class="card-title">Editar Reserva</h2>
+    <form method="POST" id="editar-reserva-form" class="form-solicitud">
+        {% csrf_token %}
+
+        <!-- Materia (selector) -->
+        <div class="form-group">
+            <label for="id_materia">Materia</label>
+            {{ form.materia }}
+            {% if form.materia.errors %}
+                <ul class="errorlist">{{ form.materia.errors }}</ul>
+            {% endif %}
+        </div>
+
+        <!-- Fila con tres columnas: Fecha, Hora inicio, Hora fin -->
+        <div class="grid-tres-columnas">
+            <div class="form-group">
+                <label for="id_fecha">Fecha</label>
+                <input type="date" name="fecha" id="id_fecha" class="form-control" value="{{ form.fecha.value|date:'Y-m-d' }}" required>
+                <small class="help-text">Máximo 14 días a partir de hoy.</small>
+                {% if form.fecha.errors %}
+                    <ul class="errorlist">{{ form.fecha.errors }}</ul>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="id_hora_inicio">Hora de inicio</label>
+                <input type="time" name="hora_inicio" id="id_hora_inicio" class="form-control" value="{{ form.hora_inicio.value|time:'H:i' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="id_hora_fin">Hora de fin</label>
+                <input type="time" name="hora_fin" id="id_hora_fin" class="form-control" value="{{ form.hora_fin.value|time:'H:i' }}" required>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+            <button type="submit" class="btn-dorado">Actualizar Reserva</button>
+            <a href="{% url 'crear_reserva' %}" class="btn-outline">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Función para mostrar mensajes personalizados (igual que en crear_reserva)
+    function showCustomMessage(message, type = 'error') {
+        const messagesContainer = document.getElementById('messages-container');
+        if (!messagesContainer) return;
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `custom-alert alert-${type}`;
+        alertDiv.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'} ${message}</span>`;
+
+        messagesContainer.insertBefore(alertDiv, messagesContainer.firstChild);
+
+        setTimeout(() => {
+            alertDiv.style.transition = 'opacity 0.5s ease';
+            alertDiv.style.opacity = '0';
+            setTimeout(() => alertDiv.remove(), 500);
+        }, 4000);
+    }
+
+    // Validaciones frontend (mismas que en crear_reserva)
+    const dateInput = document.getElementById('id_fecha');
+    const startTimeInput = document.getElementById('id_hora_inicio');
+    const endTimeInput = document.getElementById('id_hora_fin');
+    const form = document.getElementById('editar-reserva-form');
+
+    if (dateInput && startTimeInput && endTimeInput) {
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setDate(today.getDate() + 14);
+
+        const formatDate = (date) => date.toISOString().split('T')[0];
+        dateInput.setAttribute('min', formatDate(today));
+        dateInput.setAttribute('max', formatDate(maxDate));
+
+        form.addEventListener('submit', function(e) {
+            let errorMsg = null;
+
+            const selectedDate = new Date(dateInput.value);
+            if (selectedDate > maxDate) {
+                errorMsg = 'No se puede reservar con más de 14 días de anticipación.';
+            } else if (selectedDate < today) {
+                errorMsg = 'No se puede reservar en fechas pasadas.';
+            }
+
+            if (!errorMsg) {
+                const start = startTimeInput.value;
+                const end = endTimeInput.value;
+                if (!start || !end) {
+                    errorMsg = 'Debe seleccionar hora de inicio y hora de fin.';
+                } else if (start >= end) {
+                    errorMsg = 'La hora de fin debe ser posterior a la hora de inicio.';
+                }
+
+                if (!errorMsg && selectedDate.toDateString() === today.toDateString()) {
+                    const now = new Date();
+                    const [startHour, startMinute] = start.split(':').map(Number);
+                    const startDateTime = new Date(selectedDate);
+                    startDateTime.setHours(startHour, startMinute, 0, 0);
+                    if (startDateTime < now) {
+                        const nowFormatted = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        errorMsg = `No se puede reservar para una hora que ya ha pasado (hora actual: ${nowFormatted}).`;
+                    }
+                }
+            }
+
+            if (errorMsg) {
+                showCustomMessage(errorMsg, 'error');
+                e.preventDefault();
+                return false;
+            }
+            return true;
+        });
+    }
+</script>
+{% endblock %}

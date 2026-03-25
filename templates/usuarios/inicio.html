@@ -1,0 +1,45 @@
+{% extends "admin/base1.html" %}
+
+{% block title %}Inicio - Docente UNEFA{% endblock %}
+
+{% block content %}
+<div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+    <h1 style="color: #003366; border-bottom: 2px solid #003366; padding-bottom: 10px;">¡Sesión Iniciada con Éxito!</h1>
+    <p>Usted está en el panel exclusivo para Docentes del sistema de laboratorios.</p>
+    
+    <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <!-- Próximas Reservas (todas) -->
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <h3 style="color: #003366;">📅 Próximas Reservas</h3>
+            {% if reservas_proximas %}
+                <ul style="list-style: none; padding: 0;">
+                    {% for reserva in reservas_proximas %}
+                    <li style="margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                        <strong>{{ reserva.fecha|date:"d/m/Y" }}</strong> - 
+                        {{ reserva.hora_inicio|time:"H:i" }} a {{ reserva.hora_fin|time:"H:i" }}<br>
+                        <span style="font-size: 0.9em;">{{ reserva.materia.nombre }} ({{ reserva.materia.seccion }}) - Docente: {{ reserva.docente.get_full_name|default:reserva.docente.username }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No hay reservas programadas para los próximos días.</p>
+            {% endif %}
+        </div>
+        <!-- Materias Activas (del docente) -->
+        <div style="padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+            <h3 style="color: #003366;">📚 Materias Activas</h3>
+            {% if materias_activas %}
+                <ul style="list-style: none; padding: 0;">
+                    {% for materia in materias_activas %}
+                    <li style="margin-bottom: 5px;">
+                        {{ materia.nombre }} ({{ materia.seccion }})
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No tienes materias activas asignadas.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

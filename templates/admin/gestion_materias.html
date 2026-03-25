@@ -1,0 +1,426 @@
+{% extends 'admin/base1.html' %}
+{% load static %}
+
+{% block title %}Gestión de Materias - UNEFA{% endblock %}
+
+{% block content %}
+<style>
+    /* Estilos específicos */
+    .form-gestion {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-end;
+    }
+    .form-group {
+        flex: 1;
+        min-width: 180px;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        color: var(--azul-unefa);
+    }
+    .form-control {
+        width: 100%;
+        padding: 0.6rem;
+        border: 1px solid var(--gris-borde);
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        background: white;
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: var(--dorado-unefa);
+        box-shadow: 0 0 0 2px rgba(255,215,0,0.2);
+    }
+    .btn-dorado {
+        background: var(--dorado-unefa);
+        color: var(--azul-unefa);
+        border: none;
+        padding: 0.6rem 1.5rem;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.9rem;
+        height: fit-content;
+    }
+    .btn-dorado:hover {
+        background: #e6c200;
+        transform: translateY(-2px);
+    }
+    .btn-cancelar {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+    }
+    .btn-cancelar:hover {
+        background: #5a6268;
+    }
+    .materia-card {
+        background: white;
+        border-radius: 20px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--sombra-suave);
+        border: 1px solid var(--gris-borde);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: transform 0.2s;
+    }
+    .materia-card:hover {
+        transform: translateX(4px);
+        border-left: 4px solid var(--dorado-unefa);
+    }
+    .materia-info h3 {
+        margin: 0;
+        color: var(--azul-unefa);
+        font-size: 1.1rem;
+    }
+    .materia-info p {
+        margin: 0.25rem 0 0;
+        color: var(--texto-oscuro);
+        font-size: 0.85rem;
+    }
+    .badge-seccion {
+        background: #e1e8ef;
+        padding: 0.2rem 0.6rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        color: var(--azul-unefa);
+    }
+    .acciones {
+        display: flex;
+        gap: 0.75rem;
+    }
+    .acciones a {
+        text-decoration: none;
+        font-size: 1.2rem;
+        transition: 0.2s;
+        cursor: pointer;
+    }
+    .acciones a:hover {
+        transform: scale(1.1);
+    }
+    .no-data {
+        text-align: center;
+        padding: 3rem;
+        background: white;
+        border-radius: 20px;
+        border: 1px dashed var(--gris-borde);
+    }
+    .no-data p {
+        margin: 0.5rem 0;
+        color: var(--texto-oscuro);
+    }
+    .icono-grande {
+        font-size: 4rem;
+    }
+
+    /* Modal personalizado */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        align-items: center;
+        justify-content: center;
+    }
+    .modal-content {
+        background: white;
+        border-radius: 20px;
+        max-width: 400px;
+        width: 90%;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        border-top: 5px solid var(--dorado-unefa);
+    }
+    .modal-content h3 {
+        color: var(--azul-unefa);
+        margin-bottom: 0.5rem;
+    }
+    .modal-content p {
+        color: var(--texto-oscuro);
+        margin-bottom: 1.5rem;
+    }
+    .modal-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+    .modal-buttons button {
+        padding: 0.5rem 1.2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        border: none;
+    }
+    .btn-confirmar {
+        background: var(--rojo-error);
+        color: white;
+    }
+    .btn-cancelar-modal {
+        background: #6c757d;
+        color: white;
+    }
+    @media (max-width: 640px) {
+        .form-gestion {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .btn-dorado, .btn-cancelar {
+            width: 100%;
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+        .materia-card {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        .acciones {
+            align-self: flex-end;
+        }
+    }
+</style>
+
+<div class="card">
+    <h2 class="card-title">Gestión de Materias</h2>
+    <p class="subtitulo">Panel para el registro de cátedras con laboratorio.</p>
+
+    <!-- Formulario para crear/editar materia -->
+    <form method="POST" id="materia-form" class="form-gestion">
+        {% csrf_token %}
+        <input type="hidden" name="materia_id" id="materia_id" value="">
+        <div class="form-group">
+            <label for="nombre">Nombre de la Materia</label>
+            <input type="text" name="nombre" id="nombre" class="form-control" required placeholder="Ej. Sistemas Operativos II">
+        </div>
+        <div class="form-group">
+            <label for="seccion">Sección</label>
+            <input type="text" name="seccion" id="seccion" class="form-control" required placeholder="Ej. D01">
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn-dorado" id="btn-submit">Guardar Materia</button>
+            <button type="button" class="btn-cancelar" id="btn-cancelar" style="display: none;">Cancelar</button>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Mis Materias Registradas</h2>
+    <div id="materias-list">
+        {% for materia in materias %}
+        <div class="materia-card" data-id="{{ materia.id }}" data-nombre="{{ materia.nombre }}" data-seccion="{{ materia.seccion }}">
+            <div class="materia-info">
+                <h3>{{ materia.nombre }}</h3>
+                <p><span class="badge-seccion">Sección: {{ materia.seccion }}</span></p>
+            </div>
+            <div class="acciones">
+                <a href="#" class="editar-materia" title="Editar materia">
+                    <i class="fas fa-edit" style="color: var(--azul-unefa);"></i>
+                </a>
+                <a href="#" class="eliminar-materia" title="Eliminar materia" data-url="{% url 'eliminar_materia' materia.id %}">
+                    <i class="fas fa-trash-alt" style="color: #e74c3c;"></i>
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-data">
+            <div class="icono-grande">📚</div>
+            <p><strong>Aún no has registrado materias.</strong></p>
+            <p>Usa el formulario de arriba para agregar tu primera materia.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Modal personalizado -->
+<div id="modal-eliminar" class="modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-exclamation-triangle"></i> Confirmar eliminación</h3>
+        <p>¿Estás seguro de eliminar la materia <strong id="materia-nombre-eliminar"></strong>?</p>
+        <p style="font-size: 0.85rem; color: #666;">Esta acción eliminará también todas las reservas asociadas.</p>
+        <div class="modal-buttons">
+            <button id="confirmar-eliminar" class="btn-confirmar">Sí, eliminar</button>
+            <button id="cancelar-eliminar" class="btn-cancelar-modal">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para mostrar mensajes personalizados (institucional)
+    function showCustomMessage(message, type = 'error') {
+        const messagesContainer = document.getElementById('messages-container');
+        if (!messagesContainer) return;
+
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `custom-alert alert-${type}`;
+        alertDiv.innerHTML = `<span>${type === 'success' ? '✅' : '⚠️'} ${message}</span>`;
+
+        messagesContainer.insertBefore(alertDiv, messagesContainer.firstChild);
+
+        setTimeout(() => {
+            alertDiv.style.transition = 'opacity 0.5s ease';
+            alertDiv.style.opacity = '0';
+            setTimeout(() => alertDiv.remove(), 500);
+        }, 4000);
+    }
+
+    // Variables para edición
+    const form = document.getElementById('materia-form');
+    const nombreInput = document.getElementById('nombre');
+    const seccionInput = document.getElementById('seccion');
+    const materiaIdInput = document.getElementById('materia_id');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnCancelar = document.getElementById('btn-cancelar');
+
+    // Variables para modal
+    const modal = document.getElementById('modal-eliminar');
+    const confirmarBtn = document.getElementById('confirmar-eliminar');
+    const cancelarBtn = document.getElementById('cancelar-eliminar');
+    let materiaAEliminar = null;
+    let eliminarUrl = null;
+
+    // Capturar clics en editar
+    document.querySelectorAll('.editar-materia').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const card = link.closest('.materia-card');
+            const id = card.dataset.id;
+            const nombre = card.dataset.nombre;
+            const seccion = card.dataset.seccion;
+
+            nombreInput.value = nombre;
+            seccionInput.value = seccion;
+            materiaIdInput.value = id;
+            btnSubmit.textContent = 'Actualizar Materia';
+            btnCancelar.style.display = 'inline-block';
+        });
+    });
+
+    // Cancelar edición
+    btnCancelar.addEventListener('click', () => {
+        nombreInput.value = '';
+        seccionInput.value = '';
+        materiaIdInput.value = '';
+        btnSubmit.textContent = 'Guardar Materia';
+        btnCancelar.style.display = 'none';
+    });
+
+    // Manejar clic en eliminar (mostrar modal)
+    document.querySelectorAll('.eliminar-materia').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const card = link.closest('.materia-card');
+            const nombre = card.dataset.nombre;
+            materiaAEliminar = card;
+            eliminarUrl = link.dataset.url;
+            document.getElementById('materia-nombre-eliminar').textContent = nombre;
+            modal.style.display = 'flex';
+        });
+    });
+
+    // Confirmar eliminación
+    confirmarBtn.addEventListener('click', () => {
+        if (!materiaAEliminar || !eliminarUrl) return;
+        fetch(eliminarUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            modal.style.display = 'none';
+            if (data.success) {
+                showCustomMessage('Materia eliminada correctamente.', 'success');
+                // Eliminar la tarjeta del DOM
+                materiaAEliminar.remove();
+                // Si no quedan materias, mostrar mensaje de vacío
+                if (document.querySelectorAll('.materia-card').length === 0) {
+                    const container = document.getElementById('materias-list');
+                    container.innerHTML = `
+                        <div class="no-data">
+                            <div class="icono-grande">📚</div>
+                            <p><strong>Aún no has registrado materias.</strong></p>
+                            <p>Usa el formulario de arriba para agregar tu primera materia.</p>
+                        </div>
+                    `;
+                }
+            } else {
+                showCustomMessage(data.error || 'Error al eliminar la materia.', 'error');
+            }
+            materiaAEliminar = null;
+            eliminarUrl = null;
+        })
+        .catch(() => {
+            modal.style.display = 'none';
+            showCustomMessage('Error de conexión. Intenta de nuevo.', 'error');
+            materiaAEliminar = null;
+            eliminarUrl = null;
+        });
+    });
+
+    // Cancelar eliminación (cerrar modal)
+    cancelarBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+        materiaAEliminar = null;
+        eliminarUrl = null;
+    });
+
+    // Cerrar modal si se hace clic fuera del contenido
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+            materiaAEliminar = null;
+            eliminarUrl = null;
+        }
+    });
+
+    // Validación frontend antes de enviar (duplicados)
+    form.addEventListener('submit', function(e) {
+        const nombre = nombreInput.value.trim();
+        const seccion = seccionInput.value.trim();
+        const materiaId = materiaIdInput.value;
+        if (!nombre || !seccion) {
+            showCustomMessage('Ambos campos son obligatorios.', 'error');
+            e.preventDefault();
+            return;
+        }
+
+        // Verificar duplicados entre las materias existentes (solo si no es la misma materia)
+        let duplicado = false;
+        document.querySelectorAll('.materia-card').forEach(card => {
+            const cardId = card.dataset.id;
+            const cardNombre = card.dataset.nombre;
+            const cardSeccion = card.dataset.seccion;
+            if ((!materiaId || cardId !== materiaId) && cardNombre === nombre && cardSeccion === seccion) {
+                duplicado = true;
+            }
+        });
+        if (duplicado) {
+            showCustomMessage('Ya existe una materia con el mismo nombre y sección.', 'error');
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
