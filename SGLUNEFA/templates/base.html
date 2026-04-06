@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SG de Laboratorio - UNEFA/Punto Fijo{% endblock %}</title>
+    <style>
+        :root {
+            --azul-unefa: #003366;
+            --dorado-unefa: #FFD700;
+            --gris-fondo: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Barra Superior (Header) */
+        .top-header {
+            background-color: var(--azul-unefa);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between; /* Empuja los elementos a los extremos */
+            align-items: center;
+            border-bottom: 3px solid var(--dorado-unefa);
+            z-index: 1000;
+        }
+
+        .top-header .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .user-info a {
+            color: white;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        .user-info a:hover {
+            text-decoration: underline;
+        }
+
+        /* Contenedor Principal */
+        .wrapper {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--azul-unefa);
+            color: var(--dorado-unefa);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            background-color: var(--gris-fondo);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: var(--dorado-unefa);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 215, 0, 0.1);
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
+            color: #FF4444;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            font-size: 0.85rem;
+            padding: 0;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-header">
+        <div class="logo-section">
+            <img src="{% static 'img/logo_unefa.png' %}" alt="Logo UNEFA" style="height: 45px; width: auto;">
+            <span style="font-size: 1.3rem; font-weight: bold;">
+                SG DE LABORATORIO - UNEFA/Punto Fijo
+            </span>
+        </div>
+
+        <div class="user-info" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+    BIENVENIDO,
+    <strong style="font-weight: 700; color: var(--dorado-unefa);">
+        {% if user.get_full_name %}
+            {{ user.get_full_name|upper }}
+        {% else %}
+            {{ user.username|upper }}
+        {% endif %}
+    </strong>.
+
+    <span style="margin-left: 8px; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 8px;">
+        <a href="/" style="color: white; text-decoration: none;">VER EL SITIO</a> /
+        <a href="{% url 'admin:password_change' %}" style="color: white; text-decoration: none;">CAMBIAR CONTRASEÑA</a> /
+
+        <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn-logout" style="font-size: 0.75rem; vertical-align: baseline;">
+                TERMINAR SESIÓN
+            </button>
+        </form>
+    </span>
+</div>
+
+            {% if user.is_staff %}
+                <span style="margin-left: 15px; cursor: pointer;" title="Cambiar tema">🌓</span>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="wrapper">
+        <aside class="sidebar">
+            <nav>
+                <a href="{% url 'inicio' %}" class="nav-item">🏠 Inicio</a>
+                <a href="#" class="nav-item">📅 Mis Reservas</a>
+                <a href="#" class="nav-item">📚 Mis Materias</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+</body>
+</html>

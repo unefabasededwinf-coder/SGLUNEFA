@@ -1,0 +1,310 @@
+{% extends "admin/login.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Reset y base */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-image: url("{% static 'img/fondo_venezuela.png' %}") !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-attachment: fixed !important;
+        font-family: 'Poppins', sans-serif !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 16px !important;
+        min-height: 100vh !important;
+    }
+
+    /* Ocultar elementos originales de Django admin */
+    #header, .breadcrumbs, #footer, .submit-row br {
+        display: none !important;
+    }
+
+    #content {
+        padding: 0 !important;
+        background: none !important;
+    }
+
+    .login #container {
+        background: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 400px !important;
+        padding: 0 !important;
+    }
+
+    /* Contenedor principal estilo tarjeta */
+    .caja-unefa-real {
+        background: rgba(0, 51, 102, 0.92) !important;
+        backdrop-filter: blur(2px);
+        border-radius: 30px !important;
+        overflow: hidden !important;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(255,215,0,0.2) !important;
+        border: 2px solid rgba(255, 215, 0, 0.6) !important;
+        width: 100%;
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Cabecera */
+    .unefa-header-block {
+        background: rgba(0, 51, 102, 0.8) !important;
+        padding: clamp(20px, 5vw, 30px) clamp(15px, 4vw, 25px) !important;
+        text-align: center !important;
+        border-bottom: 3px solid #FFD700 !important;
+    }
+
+    .unefa-logo {
+        max-width: clamp(70px, 20vw, 90px) !important;
+        height: auto !important;
+        margin-bottom: 12px !important;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+    }
+
+    .unefa-title {
+        color: #FFD700 !important;
+        font-size: clamp(1rem, 4vw, 1.2rem) !important;
+        font-weight: 600 !important;
+        text-transform: uppercase;
+        margin: 0 !important;
+        line-height: 1.3;
+        letter-spacing: 1px;
+    }
+
+    /* Contenido del formulario */
+    .form-content {
+        padding: clamp(20px, 6vw, 30px) clamp(20px, 5vw, 30px) !important;
+    }
+
+    .form-row {
+        margin-bottom: 18px !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    label {
+        color: #FFD700 !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        margin-bottom: 6px !important;
+        display: block !important;
+        float: none !important;
+        width: auto !important;
+    }
+
+    input[type="text"], 
+    input[type="password"] {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 215, 0, 0.5) !important;
+        color: white !important;
+        padding: 12px !important;
+        border-radius: 12px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        font-size: 1rem !important;
+        transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+        outline: none !important;
+        border-color: #FFD700 !important;
+        box-shadow: 0 0 8px rgba(255, 215, 0, 0.4) !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .submit-row {
+        padding: 10px 0 0 0 !important;
+        margin: 0 !important;
+        background: none !important;
+        border: none !important;
+    }
+
+    .submit-row input {
+        background: #FFD700 !important;
+        color: #003366 !important;
+        font-weight: bold !important;
+        font-size: 1rem !important;
+        padding: 14px !important;
+        border: none !important;
+        border-radius: 12px !important;
+        cursor: pointer !important;
+        width: 100% !important;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+        letter-spacing: 1px;
+    }
+
+    .submit-row input:hover {
+        background: #e6c200 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    /* Mensajes de error */
+    .errornote {
+        background: rgba(114, 28, 36, 0.9) !important;
+        color: #f8d7da !important;
+        padding: 10px !important;
+        border-radius: 12px !important;
+        font-size: 0.8rem !important;
+        margin-bottom: 20px !important;
+        text-align: center !important;
+        border-left: 4px solid #FFD700 !important;
+    }
+
+    /* Enlaces del pie - distancia reducida */
+    .footer-links {
+        text-align: center;
+        padding: 0 clamp(20px, 5vw, 30px) clamp(12px, 3vw, 16px) !important;
+        background: rgba(0, 51, 102, 0.6) !important;
+        border-top: 1px solid rgba(255, 215, 0, 0.3);
+    }
+
+    .password-recovery-link, 
+    .register-link {
+        display: inline-block;
+        color: #FFD700 !important;
+        text-decoration: none;
+        font-size: 0.8rem;
+        margin: 6px 10px !important;
+        transition: all 0.2s;
+    }
+
+    .password-recovery-link:hover,
+    .register-link:hover {
+        text-decoration: underline;
+        color: #ffea80 !important;
+    }
+
+    /* Responsive para móviles */
+    @media (max-width: 480px) {
+        body {
+            padding: 10px !important;
+        }
+        .login #container {
+            max-width: 100% !important;
+        }
+        .caja-unefa-real {
+            border-radius: 24px !important;
+        }
+        .form-content {
+            padding: 20px !important;
+        }
+        input[type="text"], 
+        input[type="password"] {
+            padding: 10px !important;
+        }
+        .submit-row input {
+            padding: 12px !important;
+        }
+        /* En móviles los enlaces se apilan con menos separación */
+        .password-recovery-link, 
+        .register-link {
+            display: block;
+            margin: 8px 0 !important;
+        }
+        .footer-links {
+            padding: 12px 20px !important;
+        }
+    }
+
+    /* Ajuste para pantallas muy pequeñas */
+    @media (max-width: 360px) {
+        .unefa-title {
+            font-size: 0.9rem !important;
+        }
+        .form-row {
+            margin-bottom: 14px !important;
+        }
+        .password-recovery-link,
+        .register-link {
+            font-size: 0.7rem;
+            margin: 6px 0 !important;
+        }
+    }
+
+    /* Orientación horizontal en móviles */
+    @media (max-width: 700px) and (orientation: landscape) {
+        body {
+            padding: 12px !important;
+        }
+        .caja-unefa-real {
+            max-width: 500px;
+            margin: auto;
+        }
+        .unefa-header-block {
+            padding: 15px !important;
+        }
+        .unefa-logo {
+            max-width: 55px !important;
+        }
+        .form-content {
+            padding: 15px 20px !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="caja-unefa-real">
+    <div class="unefa-header-block">
+        <img src="{% static 'img/logo_unefa.png' %}" alt="Logo UNEFA" class="unefa-logo">
+        <p class="unefa-title">SG de Laboratorio<br>UNEFA / Punto Fijo</p>
+    </div>
+
+    <div class="form-content">
+        {% if form.errors %}
+            <p class="errornote">Usuario o contraseña incorrectos.</p>
+        {% endif %}
+
+        <form action="" method="post" id="login-form">
+            {% csrf_token %}
+            <div class="form-row">
+                <label for="id_username">Usuario (Cédula):</label>
+                <input type="text" name="username" id="id_username" required>
+            </div>
+            <div class="form-row">
+                <label for="id_password">Contraseña:</label>
+                <input type="password" name="password" id="id_password" required>
+            </div>
+            <div class="submit-row">
+                <input type="submit" value="ACCESO">
+            </div>
+        </form>
+    </div>
+
+    <div class="footer-links">
+        <a href="{% url 'registro' %}" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
+        <a href="{% url 'reset_password' %}" class="password-recovery-link">¿Olvidaste tu contraseña?</a>
+    </div>
+</div>
+{% endblock %}

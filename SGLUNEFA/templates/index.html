@@ -1,0 +1,214 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Sistema SGL - UNEFA</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-image: url("{% static 'img/fondo_venezuela.png' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+        }
+
+        /* Contenedor principal */
+        .selector-container {
+            background: rgba(0, 51, 102, 0.92);
+            backdrop-filter: blur(2px);
+            padding: clamp(24px, 8vw, 50px) clamp(20px, 5vw, 40px);
+            border-radius: 30px;
+            text-align: center;
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 215, 0, 0.2);
+            max-width: 550px;
+            width: 100%;
+            transition: transform 0.3s ease;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: min(90px, 20vw);
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+
+        .sistema-titulo {
+            font-size: clamp(1.8rem, 8vw, 2.6rem);
+            font-weight: 700;
+            color: #FFD700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            line-height: 1.2;
+        }
+
+        .subtitulo {
+            color: #FFD700;
+            font-size: clamp(1rem, 4vw, 1.2rem);
+            font-weight: 500;
+            margin-top: 8px;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 8px;
+        }
+
+        .subtitulo::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            width: 50%;
+            height: 2px;
+            background: #FFD700;
+            border-radius: 2px;
+        }
+
+        .opciones {
+            display: flex;
+            gap: clamp(20px, 5vw, 30px);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: clamp(18px, 5vw, 25px) clamp(15px, 4vw, 20px);
+            border-radius: 20px;
+            text-decoration: none;
+            color: #003366;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            width: clamp(140px, 40vw, 170px);
+            border: 1px solid rgba(0, 51, 102, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .card img {
+            width: clamp(50px, 15vw, 70px);
+            height: auto;
+            margin-bottom: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .card span {
+            display: block;
+            font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+            letter-spacing: 1px;
+        }
+
+        /* Efecto hover solo en dispositivos que soporten hover (para escritorio) */
+        @media (hover: hover) {
+            .card:hover {
+                transform: translateY(-10px);
+                background: #FFD700;
+                border-color: #FFD700;
+                box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+                color: #003366;
+            }
+            .card:hover img {
+                transform: scale(1.05);
+                filter: brightness(0.9);
+            }
+        }
+
+        /* Activar efecto táctil en móviles */
+        .card:active {
+            transform: scale(0.97);
+            background: #FFD700;
+            transition: transform 0.1s;
+        }
+
+        /* Ajustes para pantallas muy pequeñas (≤380px) */
+        @media (max-width: 380px) {
+            .selector-container {
+                padding: 20px 16px;
+            }
+            .card {
+                width: 130px;
+                padding: 12px 8px;
+            }
+            .card img {
+                width: 45px;
+            }
+            .opciones {
+                gap: 15px;
+            }
+        }
+
+        /* Ajustes para orientación horizontal en móviles */
+        @media (max-width: 700px) and (orientation: landscape) {
+            body {
+                padding: 10px;
+            }
+            .selector-container {
+                padding: 15px 20px;
+            }
+            .logo {
+                width: 60px;
+            }
+            .sistema-titulo {
+                font-size: 1.6rem;
+            }
+            .subtitulo {
+                margin-bottom: 15px;
+            }
+            .card {
+                padding: 10px;
+                width: 120px;
+            }
+            .card img {
+                width: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="selector-container">
+        <img src="{% static 'img/logo_unefa.png' %}" class="logo" alt="Logo UNEFA">
+        <div class="sistema-titulo">Sistema SGL</div>
+        <div class="subtitulo">Seleccione su Perfil</div>
+        <div class="opciones">
+            <a href="{% url 'login' %}" class="card">
+                <img src="{% static 'img/icon_docente.png' %}" alt="Docente">
+                <span>DOCENTE</span>
+            </a>
+            <a href="/admin/" class="card">
+                <img src="{% static 'img/icon_admin.png' %}" alt="Administrador">
+                <span>ADMIN</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

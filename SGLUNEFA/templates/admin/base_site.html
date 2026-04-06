@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | SG de Laboratorio{% endblock %}
+
+{% block branding %}
+<div style="display: flex; align-items: center; gap: 15px;">
+    <img src="{% static 'img/logo_unefa.png' %}" alt="UNEFA" style="height: 50px; width: auto;">
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}" style="color: #FFD700;">
+            SG de Laboratorio - UNEFA
+        </a>
+    </h1>
+</div>
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<style>
+    /* Tus estilos personalizados (azul, dorado, etc.) */
+    #header { background: #003366 !important; border-bottom: 3px solid #FFD700; }
+    #header a { color: #FFD700 !important; }
+    .module h2, .module caption, .inline-group h2 { background: #003366 !important; color: #FFD700 !important; }
+    thead th { background: #002244 !important; color: #FFD700 !important; }
+    .submit-row input.default, .button.default { background: #FFD700 !important; color: #003366 !important; }
+    td.field-nombre a, td.field-codigo_unefa a { color: #FFD700 !important; }
+
+    /* Ocultar solo el enlace "Ver sitio" */
+    .viewsitelink {
+        display: none !important;
+    }
+
+    /* Estilo para botones en la columna de acciones */
+.field-acciones a.button {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 2px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.field-acciones a.button:hover {
+    opacity: 0.9;
+}
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Eliminación por si el CSS no es suficiente
+        const link = document.querySelector('.viewsitelink') || document.querySelector('#user-tools a[href="/"]');
+        if (link) link.remove();
+    });
+</script>
+
+
+{% endblock %}

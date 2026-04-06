@@ -1,0 +1,11 @@
+# Entornos virtuales (No se suben porque cada PC crea el suyo)
+venv/
+env/
+.env
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+
+# Carpetas de configuración de VS Code
+.vscode/
