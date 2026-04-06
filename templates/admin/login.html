@@ -7,7 +7,7 @@
     /* 1. Fondo y bloqueo de scroll */
     html, body {
         height: 100% !important;
-        overflow: hidden !important; 
+        overflow: hidden !important;
         margin: 0 !important;
         padding: 0 !important;
     }
@@ -23,9 +23,9 @@
 
     /* 2. Limpieza de contenedores originales de Django */
     #content { padding: 0 !important; background: none !important; }
-    .login #container { 
-        background: none !important; 
-        border: none !important; 
+    .login #container {
+        background: none !important;
+        border: none !important;
         box-shadow: none !important;
         margin: 0 !important;
         width: 100% !important;
@@ -65,25 +65,25 @@
     }
 
     /* 5. Formulario más compacto */
-    .form-content { 
+    .form-content {
         padding: 12px 20px !important; /* reducido de 15px 25px */
     }
-    
-    .form-row { 
+
+    .form-row {
         margin-bottom: 8px !important; /* reducido de 10px */
-        border: none !important; 
+        border: none !important;
         padding: 0 !important;
     }
-    
-    label { 
-        color: #ccc !important; 
+
+    label {
+        color: #ccc !important;
         font-size: 0.8rem !important; /* reducido */
         margin-bottom: 2px !important;
         display: block !important;
         float: none !important;
         width: auto !important;
     }
-    
+
     input[type="text"], input[type="password"] {
         background: #222 !important;
         border: 1px solid #444 !important;
@@ -95,9 +95,9 @@
         font-size: 0.85rem !important;
     }
 
-    .submit-row { 
+    .submit-row {
         padding: 8px 0 0 0 !important; /* reducido */
-        margin: 0 !important; 
+        margin: 0 !important;
         background: none !important;
         border: none !important;
     }
@@ -137,7 +137,7 @@
 <div class="caja-unefa-real">
     <div class="unefa-header-block">
         <img src="{% static 'img/logo_unefa.png' %}" alt="Logo UNEFA" class="unefa-logo">
-        <p class="unefa-title">SG de Laboratorio<br>UNEFA / Punto Fijo</p>
+        <p class="unefa-title">SGL UNEFA Extension PF</p>
     </div>
 
     <div class="form-content">
@@ -156,10 +156,11 @@
             </div>
         </form>
     </div>
-
-    <div class="footer-links">
-        <a href="{% url 'registro' %}" class="register-link">¿No tienes cuenta? Regístrate aquí</a>
-        <a href="{% url 'reset_password' %}" class="password-recovery-link">¿Olvidaste tu contraseña?</a>
-    </div>
+         <div class="footer-links">
+             <!-- LOS BOTONES DE CREAR ADMINISTRADOR Y RECUPERAR CONTRASEÑA ESTAN COMENTADOS PARA QUE NO SE VEAN
+             <a href="{% url 'registro' %}" class="register-link">No tienes cuenta? Registrate aquí</a>
+             <a href="{% url 'reset_password' %}" class="password-recovery-link">Olvidaste tu contraseña?</a>
+             -->
+        </div>
 </div>
 {% endblock %}

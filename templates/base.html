@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}SG de Laboratorio - UNEFA/Punto Fijo{% endblock %}</title>
+    <title>{% block title %}SGL UNEFA Extension PF{% endblock %}</title>
     <style>
         :root {
             --azul-unefa: #003366;
@@ -112,39 +112,39 @@
 
     <header class="top-header">
         <div class="logo-section">
-            <img src="{% static 'img/logo_unefa.png' %}" alt="Logo UNEFA" style="height: 45px; width: auto;">
+            <!-- Se agrega ?{% now 'U' %} para evitar caché del logo antiguo -->
+            <img src="{% static 'img/logo_unefa1.png' %}?{% now 'U' %}" alt="Logo UNEFA" style="height: 45px; width: auto;">
             <span style="font-size: 1.3rem; font-weight: bold;">
-                SG DE LABORATORIO - UNEFA/Punto Fijo
+                SGL UNEFA Extension PF
             </span>
         </div>
 
         <div class="user-info" style="font-size: 0.75rem; letter-spacing: 0.5px;">
-    BIENVENIDO, 
-    <strong style="font-weight: 700; color: var(--dorado-unefa);">
-        {% if user.get_full_name %}
-            {{ user.get_full_name|upper }}
-        {% else %}
-            {{ user.username|upper }}
-        {% endif %}
-    </strong>. 
-    
-    <span style="margin-left: 8px; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 8px;">
-        <a href="/" style="color: white; text-decoration: none;">VER EL SITIO</a> / 
-        <a href="{% url 'admin:password_change' %}" style="color: white; text-decoration: none;">CAMBIAR CONTRASEÑA</a> /
-        
-        <form action="{% url 'logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn-logout" style="font-size: 0.75rem; vertical-align: baseline;">
-                TERMINAR SESIÓN
-            </button>
-        </form>
-    </span>
-</div>
-            
-            {% if user.is_staff %}
-                <span style="margin-left: 15px; cursor: pointer;" title="Cambiar tema">🌓</span>
-            {% endif %}
+            BIENVENIDO,
+            <strong style="font-weight: 700; color: var(--dorado-unefa);">
+                {% if user.get_full_name %}
+                    {{ user.get_full_name|upper }}
+                {% else %}
+                    {{ user.username|upper }}
+                {% endif %}
+            </strong>.
+
+            <span style="margin-left: 8px; border-left: 1px solid rgba(255,255,255,0.3); padding-left: 8px;">
+                <a href="/" style="color: white; text-decoration: none;">VER EL SITIO</a> /
+                <a href="{% url 'admin:password_change' %}" style="color: white; text-decoration: none;">CAMBIAR CONTRASEÑA</a> /
+
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout" style="font-size: 0.75rem; vertical-align: baseline;">
+                        TERMINAR SESIÓN
+                    </button>
+                </form>
+            </span>
         </div>
+
+        {% if user.is_staff %}
+            <span style="margin-left: 15px; cursor: pointer;" title="Cambiar tema">🌓</span>
+        {% endif %}
     </header>
 
     <div class="wrapper">

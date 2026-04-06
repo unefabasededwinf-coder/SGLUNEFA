@@ -34,6 +34,18 @@ class RegistroDocenteForm(forms.ModelForm):
         model = User
         fields = ['username', 'email', 'first_name', 'last_name', 'password']
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise ValidationError("Esta cédula ya está registrada.")
+        return username
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exists():
+            raise ValidationError("Este correo electrónico ya está registrado.")
+        return email
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
@@ -121,7 +133,6 @@ class ReservaForm(forms.ModelForm):
                 )
         
         return cleaned_data
-    from .models import Requerimiento
 
 class RequerimientoForm(forms.ModelForm):
     class Meta:
